@@ -1,14 +1,22 @@
 #include<stdio.h>
- typedef struct BST
+#include<iostream>
+#include<queue.h>
+using namespace std;
+typedef struct BST_node
  {
  	int data;
- 	struct BST* left;
- 	struct BST* right;
- }node;
-  
- node* getnode()
+ 	struct BST_node* left;
+ 	struct BST_node* right;
+ }BST_node;
+ 
+class TREE
+{
+	public:
+	BST_node* root;
+	    
+	BST_node* getBST_node()
  {
- 	node* ptr = new node();
+ 	BST_node* ptr = new BST_node();
  	printf("enter data\n");
  	scanf("%d",&ptr->data);
  	ptr->left = NULL;
@@ -16,44 +24,17 @@
  	return ptr;
  }
  
- void inorder_display(node* root)
+ void create_tree()
  {
- 	if(root == NULL)
- 	  return;
-    inorder_display(root->left);
-    printf("%d\n", root->data);
-    inorder_display(root->right); 
- }
- 
- void preorder_display(node* root)
- {
- 	if(root == NULL)
- 	  return;
- 	printf("%d\n", root->data);  
- 	preorder_display(root->left);
-	preorder_display(root->right); 
- }
- 
- void postorder_display(node* root)
- {
- 	if(root == NULL)
- 	  return;
-    postorder_display(root->left);
-    postorder_display(root->right);
-    printf("%d\n", root->data);
- }
- 
- main()
- {
-  	node *temp1, *temp2, *root;
+ 	BST_node *temp1, *temp2;
   	int i, n;
-  	printf("enter no of nodes\n");
+  	printf("enter no of BST_nodes\n");
   	scanf("%d", &n);
-  	root = getnode();
+  	root = getBST_node();
 	for(i = 1; i<n; i++)
 	{
 		temp1 = root;
-		temp2 = getnode();
+		temp2 = getBST_node();
 		while(1)
 		{
 			if(temp2->data <= temp1->data)
@@ -78,11 +59,98 @@
 			}
 		}
 	}
-	printf("inorder display\n");	
-	inorder_display(root);
-	printf("preorder display\n");
-	preorder_display(root);
-	printf("postorder display\n");
-	postorder_display(root);
  }
-
+ 
+ void inorder_display(BST_node* root)
+ {
+ 	if(root == NULL)
+ 	  return;
+    inorder_display(root->left);
+    printf("%d\n", root->data);
+    inorder_display(root->right); 
+ }
+ 
+ void preorder_display(BST_node* root)
+ {
+ 	if(root == NULL)
+ 	  return;
+ 	printf("%d\n", root->data);  
+ 	preorder_display(root->left);
+	preorder_display(root->right); 
+ }
+ 
+ void postorder_display(BST_node* root)
+ {
+ 	if(root == NULL)
+ 	  return;
+    postorder_display(root->left);
+    postorder_display(root->right);
+    printf("%d\n", root->data);
+ }
+ 
+ int count(BST_node *root)
+ {
+ 	if(root == NULL)
+ 	  return 0;
+ 	return (1 + count(root->left) + count(root->right));	  
+ }
+ 
+ int sum(BST_node* root)
+ {
+ 	if(root == NULL)
+ 	  return 0;
+    return (root->data + sum(root->left) + sum(root->right)); 
+ }
+ 
+ int height(BST_node* root)
+ {
+ 	if(root == NULL)
+ 	  return 0;
+ 	else
+ 	{
+		if(height(root->left) > height(root->right))
+		  return 1 + height(root->left); 	
+		else
+		  return 1+ height(root->right);  
+    }  
+ }
+ void level_traversal()
+ {
+ 	if(root == NULL)
+ 	{
+ 		printf("tree is emptyy\n");
+	 	return;	
+    }
+    BST_node* x;
+    queue <BST_node*> q;
+    q.push(root);
+    while(!q.empty())
+    {
+	    	x = q.front();
+    		printf("%d ", x->data);
+    		q.pop();
+	    cout<<endl;
+    	if(x->left!=NULL)
+    	  q.push(x->left);
+    	if(x->right!=NULL)
+		  q.push(x->right);  
+    }	 	
+ }
+};
+ 
+ main()
+ {
+ 	TREE T;
+  	T.create_tree();
+	printf("inorder display\n");	
+	T.inorder_display(T.root);
+	printf("preorder display\n");
+	T.preorder_display(T.root);
+	printf("postorder display\n");
+	T.postorder_display(T.root);
+	printf("level order display\n");
+	T.level_traversal();
+	printf("\ntotal BST_nodes : %d\n", T.count(T.root));
+	printf("sum of BST_nodes is: %d\n", T.sum(T.root));
+	printf("Height of tree is: %d\n", T.height(T.root));
+ }
